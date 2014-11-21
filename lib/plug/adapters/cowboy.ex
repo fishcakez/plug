@@ -142,8 +142,11 @@ defmodule Plug.Adapters.Cowboy do
     acceptors = options[:acceptors] || 100
     dispatch  = :cowboy_router.compile(options[:dispatch])
     compress  = options[:compress] || false
+    middlewares = [:cowboy_router, Plug.Adapters.Cowboy.Handler,
+      Plug.Adapters.Cowboy.RawHandler]
     options   = Keyword.drop(options, @not_options)
-    [ref, acceptors, options, [env: [dispatch: dispatch], compress: compress]]
+    [ref, acceptors, options,
+      [env: [dispatch: dispatch], compress: compress, middlewares: middlewares]]
   end
 
   defp build_ref(plug, scheme) do
